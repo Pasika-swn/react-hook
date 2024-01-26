@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Wrapper, CounterText, Button, Label, Input } from "./Components";
 
 const getInitialCounter = () =>
@@ -43,24 +43,14 @@ export const CounterPage = () => {
     };
   }, [initialCounter]);
 
-  const decrement = useMemo(() => {
-    //ใช้เพื่อ memorize ไม่ต้องมาเรนเดอร์ทุกรอบ ถ้ายังไม่กด - ก็ไม่ทำ
-    console.log("creating decrement fn");
-    return () => {
-      setCounter((previousCounter) => previousCounter - 1);
-    };
+  const decrement = useCallback(() => {
+    setCounter((previousCounter) => previousCounter - 1);
   }, [setCounter]);
-  const increment = useMemo(() => {
-    console.log("creating increment fn");
-    return () => {
-      setCounter((previousCounter) => previousCounter - 1);
-    };
+  const increment = useCallback(() => {
+    setCounter((previousCounter) => previousCounter - 1);
   }, [setCounter]);
-  const handleChange = useMemo(() => {
-    console.log("creating handleChange fn");
-    return (ele) => {
-      setInitialCounter(ele.target.value);
-    };
+  const handleChange = useCallback((ele) => {
+    setInitialCounter(ele.target.value);
   }, [setInitialCounter]);
 
   if (loading) return <Wrapper>Loading...</Wrapper>;
