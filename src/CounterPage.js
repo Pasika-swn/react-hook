@@ -6,14 +6,21 @@ export const CounterPage = () => {
   const [counter, setCounter] = useState(initialCounter);
 
   useEffect(() => {
-    setCounter(initialCounter)
+    setCounter(initialCounter);
 
-    setInterval(() => {
+    const id = setInterval(() => {
+      console.log("initial counter",initialCounter)
+      //ที่ทำแบบนี้เพราะมันจะคืนไอดีมา -> เอาไป clean-up
       setCounter((previousCounter) =>
         previousCounter > 0 ? previousCounter - 1 : previousCounter
       );
     }, 1000);
-  }, [initialCounter]);
+
+    //clean-up คือการ return ของที่เรา useEffect ออกไป
+    return () => {
+      clearInterval(id);
+    };
+  }, [initialCounter]); //when initialCounter changes, the effect function is called.
 
   return (
     <Wrapper>
@@ -32,8 +39,8 @@ export const CounterPage = () => {
       </div>
       <Label>
         <span>Initial Counter</span>
-        <Input 
-          value = {initialCounter}
+        <Input
+          value={initialCounter}
           onChange={(ele) => setInitialCounter(ele.target.value)}
         />
       </Label>
