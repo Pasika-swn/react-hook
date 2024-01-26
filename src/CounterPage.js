@@ -9,10 +9,13 @@ const getInitialCounter = () =>
 export const CounterPage = () => {
   const [initialCounter, setInitialCounter] = useState(0);
   const [counter, setCounter] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   //logic1: get API
   useEffect(() => {
+    setLoading(true);
     getInitialCounter().then((initialCounter) => {
+      setLoading(false);
       setInitialCounter(initialCounter);
     });
   }, []);
@@ -35,6 +38,7 @@ export const CounterPage = () => {
     };
   }, [initialCounter]);
 
+  if (loading) return <Wrapper>Loading...</Wrapper>;
   return (
     <Wrapper>
       <CounterText>{counter}</CounterText>
