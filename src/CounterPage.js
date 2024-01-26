@@ -1,26 +1,33 @@
 import { useState, useEffect } from "react";
 import { Wrapper, CounterText, Button, Label, Input } from "./Components";
 
+const getInitialCounter = () =>
+  new Promise((res) => {
+    setTimeout(() => res(10), 1000);
+  });
+
 export const CounterPage = () => {
   const [initialCounter, setInitialCounter] = useState(99);
-  const [counter, setCounter] = useState(initialCounter);
+  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
-    setCounter(initialCounter);
+    let id;
+    getInitialCounter().then((initialCounter) => {
+      setCounter(initialCounter);
+      id = setInterval(() => {
+        console.log("initial counter", initialCounter);
+        setCounter((previousCounter) =>
+          previousCounter > 0 ? previousCounter - 1 : previousCounter
+        );
+      }, 1000);
+    });
 
-    const id = setInterval(() => {
-      console.log("initial counter",initialCounter)
-      //ที่ทำแบบนี้เพราะมันจะคืนไอดีมา -> เอาไป clean-up
-      setCounter((previousCounter) =>
-        previousCounter > 0 ? previousCounter - 1 : previousCounter
-      );
-    }, 1000);
-
-    //clean-up คือการ return ของที่เรา useEffect ออกไป
     return () => {
-      clearInterval(id);
+      if (id) {
+        clearInterval(id);
+      }
     };
-  }, [initialCounter]); //when initialCounter changes, the effect function is called.
+  }, []);
 
   return (
     <Wrapper>
