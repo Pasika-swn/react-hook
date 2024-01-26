@@ -47,7 +47,7 @@ export const CounterPage = () => {
     setCounter((previousCounter) => previousCounter - 1);
   }, [setCounter]);
   const increment = useCallback(() => {
-    setCounter((previousCounter) => previousCounter - 1);
+    setCounter((previousCounter) => previousCounter + 1);
   }, [setCounter]);
   const handleChange = useCallback((ele) => {
     setInitialCounter(ele.target.value);
