@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
-import { Wrapper, CounterText, Button } from "./Components";
+import { Wrapper, CounterText, Button, Label, Input } from "./Components";
 
 export const CounterPage = () => {
-  const [counter, setCounter] = useState(10);
+  const [initialCounter, setInitialCounter] = useState(99);
+  const [counter, setCounter] = useState(initialCounter);
 
   useEffect(() => {
-    //ถูกรันตอนครั้งแรกที่ cpn มีการ mount
-    // setInterval(() => {
-    //   setCounter(counter - 1)
-    // }, 1000)
-    //----notice---- there is some bugs (lagging) -> bc โดนรัน interval ซ้ำๆในเวลาเหลื่อมกัน
+    setCounter(initialCounter)
 
-    //-how to fix-// -> using function instead
     setInterval(() => {
-      setCounter((previousCounter) => previousCounter > 0 ? previousCounter - 1 : previousCounter);
+      setCounter((previousCounter) =>
+        previousCounter > 0 ? previousCounter - 1 : previousCounter
+      );
     }, 1000);
-  }, []); //กำหนด dependency -> [] -> it should be run just once
+  }, [initialCounter]);
 
   return (
     <Wrapper>
@@ -32,6 +30,13 @@ export const CounterPage = () => {
           +1
         </Button>
       </div>
+      <Label>
+        <span>Initial Counter</span>
+        <Input 
+          value = {initialCounter}
+          onChange={(ele) => setInitialCounter(ele.target.value)}
+        />
+      </Label>
     </Wrapper>
   );
 };
