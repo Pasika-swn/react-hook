@@ -7,27 +7,33 @@ const getInitialCounter = () =>
   });
 
 export const CounterPage = () => {
-  const [initialCounter, setInitialCounter] = useState(99);
+  const [initialCounter, setInitialCounter] = useState(0);
   const [counter, setCounter] = useState(0);
+
+  //logic1: get API
+  useEffect(() => {
+    getInitialCounter().then((initialCounter) => {
+      setInitialCounter(initialCounter);
+    });
+  }, []);
 
   useEffect(() => {
     let id;
-    getInitialCounter().then((initialCounter) => {
-      setCounter(initialCounter);
-      id = setInterval(() => {
-        console.log("initial counter", initialCounter);
-        setCounter((previousCounter) =>
-          previousCounter > 0 ? previousCounter - 1 : previousCounter
-        );
-      }, 1000);
-    });
+    setCounter(initialCounter);
+    //logic2: setInterval()
+    id = setInterval(() => {
+      console.log("initial counter", initialCounter);
+      setCounter((previousCounter) =>
+        previousCounter > 0 ? previousCounter - 1 : previousCounter
+      );
+    }, 1000);
 
     return () => {
       if (id) {
         clearInterval(id);
       }
     };
-  }, []);
+  }, [initialCounter]);
 
   return (
     <Wrapper>
