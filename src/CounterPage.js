@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Wrapper, CounterText, Button, Label, Input } from "./Components";
 
 const getInitialCounter = () =>
@@ -12,7 +12,6 @@ export const CounterPage = () => {
   const [loading, setLoading] = useState(false);
   const inputEl = useRef(null);
 
-  //logic1: get API
   useEffect(() => {
     setLoading(true);
     getInitialCounter().then((initialCounter) => {
@@ -30,7 +29,6 @@ export const CounterPage = () => {
   useEffect(() => {
     let id;
     setCounter(initialCounter);
-    //logic2: setInterval()
     id = setInterval(() => {
       console.log("initial counter", initialCounter);
       setCounter((previousCounter) =>
@@ -45,29 +43,37 @@ export const CounterPage = () => {
     };
   }, [initialCounter]);
 
+  const decrement = useMemo(() => {
+    //ใช้เพื่อ memorize ไม่ต้องมาเรนเดอร์ทุกรอบ ถ้ายังไม่กด - ก็ไม่ทำ
+    console.log("creating decrement fn");
+    return () => {
+      setCounter((previousCounter) => previousCounter - 1);
+    };
+  }, [setCounter]);
+  const increment = useMemo(() => {
+    console.log("creating increment fn");
+    return () => {
+      setCounter((previousCounter) => previousCounter - 1);
+    };
+  }, [setCounter]);
+  const handleChange = useMemo(() => {
+    console.log("creating handleChange fn");
+    return (ele) => {
+      setInitialCounter(ele.target.value);
+    };
+  }, [setInitialCounter]);
+
   if (loading) return <Wrapper>Loading...</Wrapper>;
   return (
     <Wrapper>
       <CounterText>{counter}</CounterText>
       <div>
-        <Button
-          onClick={() => setCounter((previousCounter) => previousCounter - 1)}
-        >
-          -1
-        </Button>
-        <Button
-          onClick={() => setCounter((previousCounter) => previousCounter + 1)}
-        >
-          +1
-        </Button>
+        <Button onClick={decrement}>-1</Button>
+        <Button onClick={increment}>+1</Button>
       </div>
       <Label>
         <span>Initial Counter</span>
-        <Input
-          ref={inputEl}
-          value={initialCounter}
-          onChange={(ele) => setInitialCounter(ele.target.value)}
-        />
+        <Input ref={inputEl} value={initialCounter} onChange={handleChange} />
       </Label>
     </Wrapper>
   );
